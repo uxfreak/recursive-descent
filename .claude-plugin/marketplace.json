@@ -1,4 +1,5 @@
 {
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "recursive-descent",
   "owner": {
     "name": "Saurabh Suman",
@@ -9,10 +10,15 @@
   "plugins": [
     {
       "name": "recursive-descent",
-      "source": ".",
+      "source": "./",
       "description": "Formalize the architecture of an unfamiliar codebase by recursive descent (L0 → L1 → L2 → L3), with wan-cli for project memory and the four-check validation protocol.",
       "version": "0.1.0",
       "category": "documentation",
+      "author": {
+        "name": "Saurabh Suman",
+        "email": "sksiitb@gmail.com",
+        "url": "https://github.com/uxfreak"
+      },
       "keywords": [
         "formalization",
         "architecture",
