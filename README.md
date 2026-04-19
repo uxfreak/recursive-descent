@@ -4,7 +4,7 @@
 
 Ships:
 - The `/recursive-descent:formalize` skill (orchestrates the methodology)
-- The `wan` CLI (project-memory + workflow tool) pre-built, added to PATH
+- The `wan` CLI (project-memory + workflow tool) as vendored TypeScript source + bash wrapper; runs via `bun` on PATH
 - Reference documentation (doctrine, levels, session protocol, validation, case study)
 
 ## What it does
@@ -32,10 +32,10 @@ This methodology was applied to the [typst typesetting system](https://github.co
 
 ```bash
 # Add the plugin to Claude Code
-/plugin install https://github.com/<your-org>/recursive-descent
+/plugin install https://github.com/uxfreak/recursive-descent
 
 # Or clone and add locally
-git clone https://github.com/<your-org>/recursive-descent ~/.claude/plugins/recursive-descent
+git clone https://github.com/uxfreak/recursive-descent ~/.claude/plugins/recursive-descent
 ```
 
 **Runtime dependency**: [`bun`](https://bun.sh) (the TypeScript runtime). If you don't have it:
@@ -136,7 +136,7 @@ If you use this methodology in published work, cite:
 
 ```
 recursive-descent-formalization (Claude Code plugin), v0.1.0.
-https://github.com/<your-org>/recursive-descent
+https://github.com/uxfreak/recursive-descent
 ```
 
 And link back to the typst case study for concrete evidence the methodology produces useful artifacts.
