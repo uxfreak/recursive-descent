@@ -16,7 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `SESSION-PROTOCOL.md` — six-command core loop
   - `VALIDATION.md` — four-check completion protocol + script templates
   - `CASE-STUDY.md` — typst formalization as proof-of-work
-- **`wan` CLI bundled** (`bin/wan`) — Work Activity Notes tool pre-built
+- **`wan` CLI** — vendored TypeScript source (`wan-src/`) with a bash wrapper (`bin/wan`) that runs it via `bun` on first invocation. Can be pre-compiled into `bin/wan-bin` for cached startup.
 - **Plugin manifest** (`.claude-plugin/plugin.json`) — v0.1.0
 
 ### Methodology features

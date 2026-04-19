@@ -38,9 +38,23 @@ This methodology was applied to the [typst typesetting system](https://github.co
 git clone https://github.com/<your-org>/recursive-descent ~/.claude/plugins/recursive-descent
 ```
 
+**Runtime dependency**: [`bun`](https://bun.sh) (the TypeScript runtime). If you don't have it:
+
+```bash
+curl -fsSL https://bun.sh/install | bash
+```
+
+Why bun: the plugin ships `wan` as vendored TypeScript source. On first invocation, `bun` runs it directly (~100ms startup — fast enough). Alternatively, compile once into a standalone binary for faster startup:
+
+```bash
+cd ~/.claude/plugins/recursive-descent/wan-src
+bun build src/index.ts --compile --outfile ../bin/wan-bin
+# Subsequent `wan` invocations use the cached binary.
+```
+
 After install:
 - `/recursive-descent:formalize <path-to-codebase>` invokes the skill
-- `wan` is on PATH (the Work Activity Notes CLI; `wan --help` for reference)
+- `wan` is on PATH (via `bin/wan`; `wan --help` for reference)
 
 ## Quick start
 
@@ -90,7 +104,8 @@ recursive-descent/
 │           ├── VALIDATION.md      # 4-check protocol
 │           └── CASE-STUDY.md      # typst as proof-of-work
 ├── bin/
-│   └── wan                        # pre-built binary
+│   └── wan                        # bash wrapper (runs wan-src/ via bun)
+├── wan-src/                       # vendored wan-cli TypeScript source
 ├── README.md                      # this file
 ├── LICENSE                        # MIT
 └── CHANGELOG.md                   # versioned

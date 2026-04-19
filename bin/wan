@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+# wan — Work Activity Notes CLI (runs from vendored TypeScript source)
+#
+# This wrapper keeps the plugin small in git while still delivering `wan`
+# on PATH. Runtime is bun (fast TS executor, ~100ms startup).
+#
+# If a compiled binary sits next to this wrapper (at `wan-bin`), it's used
+# directly — so users who prefer can `bun build` once and cache the result.
+
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PLUGIN_ROOT="$(dirname "$SCRIPT_DIR")"
+WAN_SRC="$PLUGIN_ROOT/wan-src"
+CACHED_BIN="$SCRIPT_DIR/wan-bin"
+
+# Fast path: use the cached binary if present.
+if [[ -x "$CACHED_BIN" ]]; then
+  exec "$CACHED_BIN" "$@"
+fi
+
+# Slow path: run from source via bun.
+if ! command -v bun >/dev/null 2>&1; then
+  cat >&2 <<EOF
+wan: bun runtime is not installed.
+
+Install bun (https://bun.sh) — it is a fast JS/TS runtime. One-liner:
+  curl -fsSL https://bun.sh/install | bash
+
+Or, build a standalone binary once:
+  cd "$WAN_SRC"
+  bun build src/index.ts --compile --outfile "$CACHED_BIN"
+
+After that, every subsequent wan invocation uses the cached binary.
+EOF
+  exit 127
+fi
+
+exec bun run "$WAN_SRC/src/index.ts" "$@"
