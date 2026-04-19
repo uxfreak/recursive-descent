@@ -1,0 +1,20 @@
+{
+  "name": "recursive-descent",
+  "version": "0.1.0",
+  "description": "Formalize the architecture of an unfamiliar codebase by recursive descent — L0 → L1 → L2 → L3 — using the wan-cli for project memory, with first-class provenance, doc-rot prevention, and an authoritative completion protocol.",
+  "author": {
+    "name": "Kasa",
+    "email": "sksiitb@gmail.com"
+  },
+  "homepage": "https://github.com/kasa-net/recursive-descent",
+  "license": "MIT",
+  "keywords": [
+    "formalization",
+    "architecture",
+    "codebase-analysis",
+    "documentation",
+    "recursive-descent",
+    "wan",
+    "methodology"
+  ]
+}
