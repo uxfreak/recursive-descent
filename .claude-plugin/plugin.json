@@ -3,10 +3,12 @@
   "version": "0.1.0",
   "description": "Formalize the architecture of an unfamiliar codebase by recursive descent — L0 → L1 → L2 → L3 — using the wan-cli for project memory, with first-class provenance, doc-rot prevention, and an authoritative completion protocol.",
   "author": {
-    "name": "Kasa",
-    "email": "sksiitb@gmail.com"
+    "name": "Saurabh Suman",
+    "email": "sksiitb@gmail.com",
+    "url": "https://github.com/uxfreak"
   },
-  "homepage": "https://github.com/kasa-net/recursive-descent",
+  "homepage": "https://github.com/uxfreak/recursive-descent",
+  "repository": "https://github.com/uxfreak/recursive-descent",
   "license": "MIT",
   "keywords": [
     "formalization",

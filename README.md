@@ -30,13 +30,14 @@ This methodology was applied to the [typst typesetting system](https://github.co
 
 ## Install
 
-```bash
-# Add the plugin to Claude Code
-/plugin install https://github.com/uxfreak/recursive-descent
+Run these two slash commands inside Claude Code:
 
-# Or clone and add locally
-git clone https://github.com/uxfreak/recursive-descent ~/.claude/plugins/recursive-descent
 ```
+/plugin marketplace add uxfreak/recursive-descent
+/plugin install recursive-descent@recursive-descent
+```
+
+The first command registers the repo as a marketplace (it hosts a `.claude-plugin/marketplace.json`); the second installs the single plugin it exposes.
 
 **No runtime dependencies.** On first invocation, the `bin/wan` wrapper downloads the prebuilt binary for your platform from [`uxfreak/wan-cli` releases](https://github.com/uxfreak/wan-cli/releases) (macOS arm64/x64, Linux x64/arm64, Windows x64), caches it as `bin/wan-bin`, and execs it. Subsequent runs are zero-latency.
 
