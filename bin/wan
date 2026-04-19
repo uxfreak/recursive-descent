@@ -1,39 +1,101 @@
 #!/usr/bin/env bash
-# wan — Work Activity Notes CLI (runs from vendored TypeScript source)
+# wan — Work Activity Notes CLI
 #
-# This wrapper keeps the plugin small in git while still delivering `wan`
-# on PATH. Runtime is bun (fast TS executor, ~100ms startup).
+# This wrapper auto-installs the wan binary on first invocation by
+# downloading the platform-appropriate release asset from
+# https://github.com/uxfreak/wan-cli/releases. After that, every
+# invocation execs the cached binary directly (zero-latency).
 #
-# If a compiled binary sits next to this wrapper (at `wan-bin`), it's used
-# directly — so users who prefer can `bun build` once and cache the result.
+# No runtime dependencies (no bun, no node). Just curl + tar (already
+# present on every macOS / Linux box).
 
 set -euo pipefail
 
+WAN_VERSION="${WAN_VERSION:-v0.1.0}"
+WAN_REPO="${WAN_REPO:-uxfreak/wan-cli}"
+
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PLUGIN_ROOT="$(dirname "$SCRIPT_DIR")"
-WAN_SRC="$PLUGIN_ROOT/wan-src"
 CACHED_BIN="$SCRIPT_DIR/wan-bin"
 
-# Fast path: use the cached binary if present.
+# Fast path: cached binary present.
 if [[ -x "$CACHED_BIN" ]]; then
   exec "$CACHED_BIN" "$@"
 fi
 
-# Slow path: run from source via bun.
-if ! command -v bun >/dev/null 2>&1; then
+# Slow path (first run): detect platform and download.
+detect_asset() {
+  local os arch
+  os="$(uname -s)"
+  arch="$(uname -m)"
+
+  case "$os" in
+    Darwin)
+      case "$arch" in
+        arm64)  echo "wan-darwin-arm64" ;;
+        x86_64) echo "wan-darwin-x64" ;;
+        *)      echo "unsupported-darwin-$arch" ;;
+      esac
+      ;;
+    Linux)
+      case "$arch" in
+        x86_64)        echo "wan-linux-x64" ;;
+        aarch64|arm64) echo "wan-linux-arm64" ;;
+        *)             echo "unsupported-linux-$arch" ;;
+      esac
+      ;;
+    MINGW*|MSYS*|CYGWIN*)
+      echo "wan-windows-x64.exe"
+      ;;
+    *)
+      echo "unsupported-$os-$arch"
+      ;;
+  esac
+}
+
+ASSET="$(detect_asset)"
+
+if [[ "$ASSET" == unsupported-* ]]; then
   cat >&2 <<EOF
-wan: bun runtime is not installed.
+wan: no prebuilt binary for this platform ($ASSET).
 
-Install bun (https://bun.sh) — it is a fast JS/TS runtime. One-liner:
-  curl -fsSL https://bun.sh/install | bash
+Build from source:
+  git clone https://github.com/$WAN_REPO
+  cd wan-cli && bun build src/index.ts --compile --outfile "$CACHED_BIN"
 
-Or, build a standalone binary once:
-  cd "$WAN_SRC"
-  bun build src/index.ts --compile --outfile "$CACHED_BIN"
-
-After that, every subsequent wan invocation uses the cached binary.
+Or open an issue: https://github.com/$WAN_REPO/issues
 EOF
+  exit 1
+fi
+
+URL="https://github.com/$WAN_REPO/releases/download/$WAN_VERSION/$ASSET"
+
+echo "wan: first run — downloading $ASSET ($WAN_VERSION)..." >&2
+echo "wan: $URL" >&2
+
+if ! command -v curl >/dev/null 2>&1; then
+  echo "wan: curl is required to install the binary on first run." >&2
   exit 127
 fi
 
-exec bun run "$WAN_SRC/src/index.ts" "$@"
+TMP="$(mktemp)"
+trap 'rm -f "$TMP"' EXIT
+
+if ! curl -fsSL --retry 3 --retry-delay 2 -o "$TMP" "$URL"; then
+  cat >&2 <<EOF
+wan: download failed.
+
+URL: $URL
+
+Check your network, or download manually and place the file at:
+  $CACHED_BIN
+  chmod +x $CACHED_BIN
+EOF
+  exit 1
+fi
+
+mv "$TMP" "$CACHED_BIN"
+chmod +x "$CACHED_BIN"
+trap - EXIT
+
+echo "wan: installed → $CACHED_BIN" >&2
+exec "$CACHED_BIN" "$@"

@@ -16,7 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `SESSION-PROTOCOL.md` — six-command core loop
   - `VALIDATION.md` — four-check completion protocol + script templates
   - `CASE-STUDY.md` — typst formalization as proof-of-work
-- **`wan` CLI** — vendored TypeScript source (`wan-src/`) with a bash wrapper (`bin/wan`) that runs it via `bun` on first invocation. Can be pre-compiled into `bin/wan-bin` for cached startup.
+- **`wan` CLI** — `bin/wan` bash wrapper auto-downloads the platform-appropriate prebuilt binary from [`uxfreak/wan-cli` releases](https://github.com/uxfreak/wan-cli/releases) on first invocation, caches it as `bin/wan-bin`, and execs it on subsequent runs. No bun/node runtime required.
 - **Plugin manifest** (`.claude-plugin/plugin.json`) — v0.1.0
 
 ### Methodology features

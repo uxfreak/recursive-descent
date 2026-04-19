@@ -1,7 +1,7 @@
-# User-compiled wan binary (optional optimization — not shipped)
+# wan binary cached at first invocation (downloaded from GitHub releases)
 bin/wan-bin
 
-# Bun/Node artifacts
+# Build artifacts
 node_modules/
 *.log
 

@@ -4,7 +4,7 @@
 
 Ships:
 - The `/recursive-descent:formalize` skill (orchestrates the methodology)
-- The `wan` CLI (project-memory + workflow tool) as vendored TypeScript source + bash wrapper; runs via `bun` on PATH
+- The `wan` CLI (project-memory + workflow tool) — bash wrapper auto-downloads the prebuilt binary on first run; no runtime dependencies
 - Reference documentation (doctrine, levels, session protocol, validation, case study)
 
 ## What it does
@@ -38,23 +38,15 @@ This methodology was applied to the [typst typesetting system](https://github.co
 git clone https://github.com/uxfreak/recursive-descent ~/.claude/plugins/recursive-descent
 ```
 
-**Runtime dependency**: [`bun`](https://bun.sh) (the TypeScript runtime). If you don't have it:
+**No runtime dependencies.** On first invocation, the `bin/wan` wrapper downloads the prebuilt binary for your platform from [`uxfreak/wan-cli` releases](https://github.com/uxfreak/wan-cli/releases) (macOS arm64/x64, Linux x64/arm64, Windows x64), caches it as `bin/wan-bin`, and execs it. Subsequent runs are zero-latency.
 
-```bash
-curl -fsSL https://bun.sh/install | bash
-```
-
-Why bun: the plugin ships `wan` as vendored TypeScript source. On first invocation, `bun` runs it directly (~100ms startup — fast enough). Alternatively, compile once into a standalone binary for faster startup:
-
-```bash
-cd ~/.claude/plugins/recursive-descent/wan-src
-bun build src/index.ts --compile --outfile ../bin/wan-bin
-# Subsequent `wan` invocations use the cached binary.
-```
+Only `curl` is required for the first-run download (already on every macOS / Linux box).
 
 After install:
 - `/recursive-descent:formalize <path-to-codebase>` invokes the skill
 - `wan` is on PATH (via `bin/wan`; `wan --help` for reference)
+
+**Pinning the wan version**: set `WAN_VERSION=v0.x.y` to override the default. The wan source lives at [github.com/uxfreak/wan-cli](https://github.com/uxfreak/wan-cli) — issues, PRs, and release notes are tracked there.
 
 ## Quick start
 
@@ -104,8 +96,7 @@ recursive-descent/
 │           ├── VALIDATION.md      # 4-check protocol
 │           └── CASE-STUDY.md      # typst as proof-of-work
 ├── bin/
-│   └── wan                        # bash wrapper (runs wan-src/ via bun)
-├── wan-src/                       # vendored wan-cli TypeScript source
+│   └── wan                        # bash wrapper (downloads prebuilt binary on first run)
 ├── README.md                      # this file
 ├── LICENSE                        # MIT
 └── CHANGELOG.md                   # versioned
