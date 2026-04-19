@@ -1,0 +1,10 @@
+# User-compiled wan binary (optional optimization — not shipped)
+bin/wan-bin
+
+# Bun/Node artifacts
+node_modules/
+*.log
+
+# OS noise
+.DS_Store
+**/.DS_Store
