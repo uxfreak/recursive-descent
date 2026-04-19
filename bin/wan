@@ -97,5 +97,11 @@ mv "$TMP" "$CACHED_BIN"
 chmod +x "$CACHED_BIN"
 trap - EXIT
 
+# macOS (especially Apple Silicon) refuses to exec unsigned Mach-O binaries.
+# Cross-compiled Bun binaries built on Linux are unsigned — ad-hoc sign them.
+if [[ "$(uname -s)" == "Darwin" ]] && command -v codesign >/dev/null 2>&1; then
+  codesign --force --sign - "$CACHED_BIN" >/dev/null 2>&1 || true
+fi
+
 echo "wan: installed → $CACHED_BIN" >&2
 exec "$CACHED_BIN" "$@"
